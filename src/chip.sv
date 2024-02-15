@@ -21,7 +21,6 @@ module my_chip (
     assign io_in[10] = go;
     assign io_in[11] = finish;
 
-    // instantiate segment display
-    seg7 seg7(.counter(digit), .segments(led_out));
+
 
 endmodule
