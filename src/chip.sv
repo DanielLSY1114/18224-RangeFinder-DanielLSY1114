@@ -8,38 +8,18 @@ module my_chip (
 );
     
     // Basic counter design as an example
+    logic [9:0] data_in;
+    logic go, finish;
+    logic [9:0] range;
+    logic debug_error;
 
+    RangeFinder #(10) dut (.data_in, .clock, .reset, .go, .finish, .range, .debug_error);
 
-    wire [6:0] led_out;
-    assign io_out[6:0] = led_out;
-
-    // external clock is 1000Hz, so need 10 bit counter
-    reg [9:0] second_counter;
-    reg [3:0] digit;
-
-    always @(posedge clock) begin
-        // if reset, set counter to 0
-        if (reset) begin
-            second_counter <= 0;
-            digit <= 0;
-        end else begin
-            // if up to 16e6
-            if (second_counter == 1000) begin
-                // reset
-                second_counter <= 0;
-
-                // increment digit
-                digit <= digit + 1'b1;
-
-                // only count from 0 to 9
-                if (digit == 9)
-                    digit <= 0;
-
-            end else
-                // increment counter
-                second_counter <= second_counter + 1'b1;
-        end
-    end
+    assign io_in[9:0] = data_in;
+    assign io_out[9:0] = range;
+    assign io_out[12] = debug_error;
+    assign io_in[10] = go;
+    assign io_in[11] = finish;
 
     // instantiate segment display
     seg7 seg7(.counter(digit), .segments(led_out));
